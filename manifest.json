@@ -1,0 +1,73 @@
+{
+  "manifest_version": 3,
+  "name": "AI Comment - LinkedIn Comment Generator",
+  "version": "1.5.0",
+  "description": "Generate professional, context-aware LinkedIn comments with AI, auto-fill LinkedIn Easy Apply forms from your uploaded resume, and generate personalized referral/opportunity DMs in the LinkedIn message composer. Drafts are inserted for review only — nothing is ever posted or sent automatically.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.linkedin.com/*",
+    "https://openrouter.ai/*",
+    "https://api.groq.com/*",
+    "https://api.x.ai/*",
+    "https://generativelanguage.googleapis.com/*",
+    "https://*.openai.azure.com/*",
+    "https://integrate.api.nvidia.com/*"
+  ],
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "AI Comment for LinkedIn",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.linkedin.com/*"
+      ],
+      "js": [
+        "content/quiet-probes.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "https://www.linkedin.com/*"
+      ],
+      "js": [
+        "utils/dom.js",
+        "content/linkedin.js",
+        "content/content.js",
+        "content/dm.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content/easyapply.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "minimum_chrome_version": "110"
+}

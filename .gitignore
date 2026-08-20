@@ -1,0 +1,5 @@
+node_modules/
+.build-staging/
+e2e/node_modules/
+e2e/debug_*.mjs
+*.log

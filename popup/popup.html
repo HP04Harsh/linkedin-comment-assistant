@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="popup.css" />
+  <title>AI Comment for LinkedIn</title>
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo" aria-hidden="true">🤖</div>
+    <div>
+      <h1>AI Comment</h1>
+      <p>LinkedIn comment generator</p>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- Generation settings -->
+    <section class="card" aria-labelledby="gen-heading">
+      <h2 id="gen-heading">Comment</h2>
+
+      <div class="field">
+        <div class="field-row">
+          <label for="length">Comment Length</label>
+          <output id="lengthValue" class="badge" for="length">200 Characters</output>
+        </div>
+        <input type="range" id="length" min="100" max="500" step="1" value="200" aria-valuemin="100" aria-valuemax="500" />
+        <div class="range-scale"><span>100</span><span>500</span></div>
+      </div>
+
+      <div class="field">
+        <label for="persona">Persona</label>
+        <select id="persona">
+          <option value="Professional">Professional</option>
+          <option value="Technical">Technical</option>
+          <option value="Networking">Networking</option>
+          <option value="Job Seeker">Job Seeker</option>
+          <option value="General">General</option>
+        </select>
+        <p class="hint" id="personaHint">Professional, business-oriented tone.</p>
+      </div>
+
+      <label class="switch-row">
+        <span class="field-label">Mention Author</span>
+        <span class="switch">
+          <input type="checkbox" id="mentionAuthor" checked />
+          <span class="slider" aria-hidden="true"></span>
+        </span>
+      </label>
+      <p class="hint">Naturally include the author's name in the comment.</p>
+    </section>
+
+    <!-- AI provider settings -->
+    <section class="card" aria-labelledby="prov-heading">
+      <h2 id="prov-heading">AI Provider</h2>
+
+      <div class="field">
+        <label for="provider">Provider</label>
+        <select id="provider">
+          <option value="groq">Groq</option>
+          <option value="openrouter">OpenRouter</option>
+          <option value="gemini">Gemini</option>
+          <option value="nvidia">NVIDIA (NIM)</option>
+          <option value="azure">Azure OpenAI</option>
+          <option value="grok">Grok (xAI)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="apiKey">API Key</label>
+        <div class="input-with-btn">
+          <input type="password" id="apiKey" autocomplete="off" spellcheck="false" placeholder="Paste your API key" />
+          <button type="button" id="toggleKey" class="ghost-btn" aria-label="Show or hide API key" title="Show / hide">👁</button>
+        </div>
+        <p class="hint">
+          <a href="#" id="keyLink" target="_blank" rel="noopener noreferrer">Get a free API key</a>
+        </p>
+      </div>
+
+      <div class="field" id="endpointField" hidden>
+        <label for="azureEndpoint">Azure Endpoint</label>
+        <input type="url" id="azureEndpoint" placeholder="https://YOUR_RESOURCE.openai.azure.com" autocomplete="off" spellcheck="false" />
+        <p class="hint">The base URL of your Azure OpenAI resource.</p>
+      </div>
+
+      <div class="field">
+        <label for="speed">Speed</label>
+        <select id="speed">
+          <option value="fast">Fast (recommended)</option>
+          <option value="quality">Quality</option>
+        </select>
+        <p class="hint" id="speedHint">Fast uses a quick model (~1-3s). Quality uses a bigger model.</p>
+      </div>
+
+      <div class="field" id="modelField">
+        <label for="model">Model</label>
+        <input type="text" id="model" list="modelList" placeholder="Auto-selected" autocomplete="off" spellcheck="false" />
+        <datalist id="modelList"></datalist>
+        <p class="hint" id="modelHint">Auto-selected based on provider and speed.</p>
+      </div>
+    </section>
+
+    <!-- Resume upload for Easy Apply auto-fill -->
+    <section class="card" aria-labelledby="res-heading">
+      <h2 id="res-heading">Resume (Easy Apply)</h2>
+      <p class="hint">
+        Upload your resume to auto-fill LinkedIn Easy Apply forms. Stored locally on this device only.
+      </p>
+
+      <div class="field">
+        <label for="resumeFile">Resume file (.pdf, .docx, .txt, .md)</label>
+        <input type="file" id="resumeFile" accept=".pdf,.docx,.txt,.md,text/plain,text/markdown" />
+        <p class="hint" id="resumeStatus">No resume uploaded yet.</p>
+      </div>
+
+      <div id="profileSummary" class="profile-summary" hidden></div>
+      <button type="button" id="clearResume" class="ghost-btn" hidden>Clear resume</button>
+
+      <label class="switch-row">
+        <span class="field-label">Auto-fill job forms</span>
+        <span class="switch">
+          <input type="checkbox" id="easyApply" checked />
+          <span class="slider" aria-hidden="true"></span>
+        </span>
+      </label>
+      <p class="hint">
+        Show the Auto-fill button on LinkedIn Easy Apply and other job application forms.
+      </p>
+
+      <label class="switch-row">
+        <span class="field-label">Auto-submit applications</span>
+        <span class="switch">
+          <input type="checkbox" id="autoSubmit" />
+          <span class="slider" aria-hidden="true"></span>
+        </span>
+      </label>
+      <p class="hint">
+        Automatically click Submit after filling. Keep OFF (recommended) so you review first.
+      </p>
+    </section>
+
+    <footer class="app-footer">
+      <button type="button" id="save" class="primary-btn">Save Settings</button>
+      <span id="status" class="status" role="status" aria-live="polite"></span>
+    </footer>
+
+    <p class="privacy-note">
+      Your API key is stored locally. The extension only drafts comments — it never posts automatically.
+    </p>
+  </main>
+
+  <script src="../vendor/pdfjs/withresolvers-polyfill.js"></script>
+  <script src="../vendor/jszip/jszip.min.js"></script>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
